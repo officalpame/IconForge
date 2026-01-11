@@ -161,8 +161,8 @@
 </template>
 
 <script setup lang="ts">
-import { useColor } from '~/composables/useColor'
-import { useExport } from '~/composables/useExport'
+import { useColor } from '~/app/composables/useColor'
+import { useExport } from '~/app/composables/useExport'
 
 interface Icon {
   id: number
