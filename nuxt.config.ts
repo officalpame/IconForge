@@ -1,6 +1,7 @@
 export default defineNuxtConfig({
   ssr: false,
   srcDir: 'app',
+  compatibilityDate: '2026-01-11',
   modules: [
     '@nuxt/ui',
     '@nuxtjs/i18n'
@@ -23,6 +24,12 @@ export default defineNuxtConfig({
   css: [
     '~/assets/css/main.css'
   ],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {}
+    }
+  },
   colorMode: {
     preference: 'system',
     classSuffix: ''
