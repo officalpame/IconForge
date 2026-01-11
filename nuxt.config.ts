@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   srcDir: 'app',
   compatibilityDate: '2026-01-11',
   modules: [
+    '@nuxtjs/tailwindcss',
     '@nuxt/ui',
     '@nuxtjs/i18n'
   ],
@@ -22,7 +23,7 @@ export default defineNuxtConfig({
     vueI18n: './app/i18n.config.ts'
   },
   css: [
-    '~/assets/css/main.css'
+    './app/assets/css/main.css'
   ],
   postcss: {
     plugins: {
