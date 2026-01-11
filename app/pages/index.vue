@@ -29,11 +29,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import AppHeader from '~/components/AppHeader.vue'
-import AppFooter from '~/components/AppFooter.vue'
-import IconBrowser from '~/components/IconBrowser.vue'
-import IconDetailModal from '~/components/IconDetailModal.vue'
-import { useIcons } from '~/composables/useIcons'
+import AppHeader from '~/app/components/AppHeader.vue'
+import AppFooter from '~/app/components/AppFooter.vue'
+import IconBrowser from '~/app/components/IconBrowser.vue'
+import IconDetailModal from '~/app/components/IconDetailModal.vue'
+import { useIcons } from '~/app/composables/useIcons'
 
 interface Icon {
   id: number
