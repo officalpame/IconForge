@@ -5,7 +5,7 @@
         <p class="text-gray-600 dark:text-gray-400 text-sm">
           {{ $t('footer.madeBy') }}
           <a
-            href="https://pame.dev"
+            href="https://galaxybot.app"
             target="_blank"
             rel="noopener noreferrer"
             class="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition-colors duration-200"
