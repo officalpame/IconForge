@@ -1,0 +1,47 @@
+{
+  "home": "Startseite",
+  "title": "IconForge",
+  "subtitle": "Icon-Browser und PNG-Exporter",
+  "search": {
+    "placeholder": "Icons durchsuchen...",
+    "noResults": "Keine Symbole gefunden"
+  },
+  "filter": {
+    "all": "Alle Stile",
+    "solid": "Solid",
+    "regular": "Regular",
+    "duotone": "Duotone"
+  },
+  "icon": {
+    "select": "Wählen",
+    "preview": "Vorschau",
+    "unicode": "Unicode",
+    "name": "Name",
+    "style": "Stil",
+    "color": "Farbe",
+    "primaryColor": "Primärfarbe",
+    "secondaryColor": "Sekundärfarbe"
+  },
+  "color": {
+    "hex": "Hex-Wert",
+    "rgb": "RGB-Wert",
+    "picker": "Farbwähler"
+  },
+  "export": {
+    "title": "PNG-Export",
+    "size": "Größe wählen",
+    "size64": "64x64 px",
+    "size128": "128x128 px",
+    "size256": "256x256 px",
+    "size512": "512x512 px",
+    "download": "Download",
+    "copy": "In Zwischenablage kopieren"
+  },
+  "footer": {
+    "madeBy": "Erstellt von ",
+    "link": "officalpame"
+  },
+  "close": "Schließen",
+  "cancel": "Abbrechen",
+  "confirm": "Bestätigen"
+}
