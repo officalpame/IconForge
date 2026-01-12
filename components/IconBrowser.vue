@@ -33,7 +33,7 @@
 
     <!-- Ergebnis-Zähler -->
     <div v-if="icons.length > 0" class="text-sm text-gray-600 dark:text-gray-400">
-      {{ $t('search.resultsCount', icons.length, { count: icons.length }) }}
+      {{ $t('search.resultsCount', { count: icons.length }) }}
     </div>
 
     <!-- Icon Grid -->
