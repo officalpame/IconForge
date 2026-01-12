@@ -1,6 +1,5 @@
 export default defineNuxtConfig({
   ssr: false,
-  srcDir: 'app',
   compatibilityDate: '2026-01-11',
   modules: [
     '@nuxtjs/tailwindcss',
@@ -22,8 +21,12 @@ export default defineNuxtConfig({
     langDir: 'locales/',
     vueI18n: './i18n.config.ts'
   },
+  dir: {
+    layouts: 'layouts',
+    middleware: 'middleware'
+  },
   css: [
-    './app/assets/css/main.css'
+    './assets/css/main.css'
   ],
   postcss: {
     plugins: {
