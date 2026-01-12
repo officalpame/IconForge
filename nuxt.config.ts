@@ -4,7 +4,7 @@ export default defineNuxtConfig({
     typescript: {
         strict: true,
     },
-    css: ['@/assets/styles/main.css'],
+    css: ['@/assets/css/main.css'],
     modules: [
         '@nuxt/ui'
     ],
@@ -13,10 +13,10 @@ export default defineNuxtConfig({
         head: {
             title: 'ICONFORGE',
             meta: [
-                { name: 'desciption', content: 'Icon Datenbank und Exporter' }
+                { name: 'description', content: 'Icon Datenbank und Exporter' }
             ],
         }
-    }
+    },
 
     vite: {
          build: {
