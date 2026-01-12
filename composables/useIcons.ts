@@ -50,11 +50,11 @@ export function useIcons() {
 
   return {
     icons,
+    filteredIcons,
     searchQuery,
     selectedStyle,
     isLoading,
     error,
-    filteredIcons,
     loadIcons
   }
 }
