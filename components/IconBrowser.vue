@@ -9,7 +9,7 @@
       <!-- Icon Preview -->
       <svg
         v-if="getIconPath(icon)"
-        viewBox="0 0 512 512"
+        :viewBox="getViewBox(icon)"
         class="w-8 h-8 mx-auto mb-2 text-gray-900 group-hover:text-blue-600 transition-colors"
         fill="currentColor"
       >
@@ -43,5 +43,13 @@ defineEmits<{
 
 const getIconPath = (icon: Icon): string => {
   return icon.styles.solid?.path || icon.styles.regular?.path || icon.styles.duotone?.path || ''
+}
+
+const getViewBox = (icon: Icon): string => {
+  const style = icon.styles.solid || icon.styles.regular || icon.styles.duotone
+  if (style?.viewBox) {
+    return style.viewBox.join(' ')
+  }
+  return '0 0 512 512'
 }
 </script>
