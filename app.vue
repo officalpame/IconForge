@@ -1,14 +1,9 @@
 <template>
-  <NuxtPage />
+  <div>
+    <NuxtPage />
+  </div>
 </template>
 
-<style>
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-</style>
+<script setup>
+</script>
 
