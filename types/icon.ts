@@ -16,5 +16,5 @@ export interface Icon {
   }
 }
 
-export type IconStyleType = 'solid' | 'regular' | 'duotone'
+export type IconStyleType = 'solid' | 'regular' | 'duotone' | 'all'
 export type ExportSize = 64 | 128 | 256 | 512
