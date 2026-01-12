@@ -1,42 +1,72 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  // SPA-Modus für optimale Client-Side Performance
   ssr: false,
-  compatibilityDate: '2026-01-11',
+  
+  compatibilityDate: '2024-04-03',
+
+  // Nuxt Modules
   modules: [
-    '@nuxtjs/tailwindcss',
     '@nuxt/ui',
-    '@nuxtjs/i18n'
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/i18n',
+    '@nuxtjs/color-mode'
   ],
-  ui: {
-    colors: {
-      primary: 'blue'
-    }
+
+  // TypeScript Konfiguration
+  typescript: {
+    strict: true,
+    typeCheck: false
   },
+
+  // Internationalisierung (i18n) - Mandatory
   i18n: {
     locales: [
-      { code: 'de', language: 'de-DE', name: 'Deutsch', file: 'de.json' },
-      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' }
+      { code: 'de', file: 'de.json', name: 'Deutsch' },
+      { code: 'en', file: 'en.json', name: 'English' }
     ],
+    lazy: true,
+    langDir: 'locales',
     defaultLocale: 'de',
-    strategy: 'prefix',
-    langDir: 'locales/',
-    vueI18n: './i18n.config.ts'
-  },
-  dir: {
-    layouts: 'layouts',
-    middleware: 'middleware'
-  },
-  css: [
-    './assets/css/main.css'
-  ],
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {}
+    strategy: 'no_prefix',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_locale',
+      redirectOn: 'root'
     }
   },
+
+  // Color Mode (Dark Mode Support)
   colorMode: {
+    classSuffix: '',
     preference: 'system',
-    classSuffix: ''
+    fallback: 'light'
   },
+
+  // Tailwind CSS
+  tailwindcss: {
+    cssPath: '~/assets/css/main.css',
+    configPath: 'tailwind.config.js'
+  },
+
+  // Globale CSS
+  css: ['~/assets/css/main.css'],
+
+  // App Meta
+  app: {
+    head: {
+      title: 'IconForge',
+      htmlAttrs: {
+        lang: 'de'
+      },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'Font Awesome Icon Viewer & PNG Exporter' }
+      ]
+    }
+  },
+
+  // Dev Tools
   devtools: { enabled: true }
 })
