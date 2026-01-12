@@ -69,7 +69,22 @@ onMounted(async () => {
   try {
     const res = await fetch('/icons.json')
     if (!res.ok) throw new Error('Icons konnten nicht geladen werden')
-    icons.value = await res.json()
+    const data = await res.json()
+    
+    // Konvertiere Objekt zu Array
+    icons.value = Object.entries(data).map(([name, iconData]: [string, any]) => ({
+      id: name,
+      name: name,
+      label: iconData.label,
+      unicode: iconData.unicode,
+      searchTerms: iconData.search?.terms || [],
+      styles: {
+        solid: iconData.styles?.includes('solid') || false,
+        regular: iconData.styles?.includes('regular') || false,
+        duotone: iconData.styles?.includes('duotone') || false
+      },
+      svg: iconData.svg || {}
+    }))
   } catch (e) {
     error.value = e instanceof Error ? e.message : 'Fehler'
   } finally {
