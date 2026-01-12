@@ -162,29 +162,20 @@
 <script setup lang="ts">
 import type { Icon, IconStyleType, ExportSize } from '~/types/icon'
 
-// Props
 interface Props {
   modelValue: boolean
   icon: Icon | null
 }
 
 const props = defineProps<Props>()
-
-// Emits
-const emit = defineEmits<{
-  'update:modelValue': [value: boolean]
-}>()
-
-// Composables
+const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
 const { exportToPNG, downloadBlob, copyToClipboard } = useExport()
 
-// Modal State
 const isOpen = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value)
 })
 
-// Reaktive States
 const svgRef = ref<SVGElement | null>(null)
 const currentStyle = ref<IconStyleType>('solid')
 const currentColor = ref('#000000')
@@ -194,7 +185,6 @@ const isExporting = ref(false)
 const isCopying = ref(false)
 const copiedSuccess = ref(false)
 
-// Verfügbare Stile für aktuelles Icon
 const availableStyles = computed(() => {
   if (!props.icon) return []
   const styles: IconStyleType[] = []
@@ -204,64 +194,40 @@ const availableStyles = computed(() => {
   return styles
 })
 
-// Aktueller SVG-Pfad
 const currentPath = computed(() => {
   if (!props.icon) return ''
   return props.icon.styles[currentStyle.value]?.path || ''
 })
 
-// Export-Größen
 const exportSizes: ExportSize[] = [64, 128, 256, 512]
 
-// Icon-Wechsel: Setze ersten verfügbaren Stil
 watch(() => props.icon, (newIcon) => {
   if (newIcon && availableStyles.value.length > 0) {
     currentStyle.value = availableStyles.value[0]
   }
 }, { immediate: true })
 
-/**
- * PNG Download
- */
 const handleDownload = async () => {
   if (!svgRef.value || !props.icon) return
-
   isExporting.value = true
   try {
     const blob = await exportToPNG(svgRef.value, selectedSize.value, currentColor.value, secondaryColor.value)
-    if (blob) {
-      const filename = `${props.icon.name}-${selectedSize.value}px.png`
-      downloadBlob(blob, filename)
-    }
-  } catch (error) {
-    console.error('Download-Fehler:', error)
+    if (blob) downloadBlob(blob, `${props.icon.name}-${selectedSize.value}px.png`)
   } finally {
     isExporting.value = false
   }
 }
 
-/**
- * In Zwischenablage kopieren
- */
 const handleCopy = async () => {
   if (!svgRef.value) return
-
   isCopying.value = true
   copiedSuccess.value = false
-  
   try {
     const blob = await exportToPNG(svgRef.value, selectedSize.value, currentColor.value, secondaryColor.value)
-    if (blob) {
-      const success = await copyToClipboard(blob)
-      if (success) {
-        copiedSuccess.value = true
-        setTimeout(() => {
-          copiedSuccess.value = false
-        }, 2000)
-      }
+    if (blob && await copyToClipboard(blob)) {
+      copiedSuccess.value = true
+      setTimeout(() => copiedSuccess.value = false, 2000)
     }
-  } catch (error) {
-    console.error('Clipboard-Fehler:', error)
   } finally {
     isCopying.value = false
   }
