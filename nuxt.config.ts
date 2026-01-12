@@ -14,13 +14,13 @@ export default defineNuxtConfig({
   },
   i18n: {
     locales: [
-      { code: 'de', iso: 'de-DE', name: 'Deutsch', file: 'de.json' },
-      { code: 'en', iso: 'en-US', name: 'English', file: 'en.json' }
+      { code: 'de', language: 'de-DE', name: 'Deutsch', file: 'de.json' },
+      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' }
     ],
     defaultLocale: 'de',
     strategy: 'prefix',
     langDir: 'locales/',
-    vueI18n: './app/i18n.config.ts'
+    vueI18n: './i18n.config.ts'
   },
   css: [
     './app/assets/css/main.css'
