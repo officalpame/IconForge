@@ -48,11 +48,6 @@ export const useIcons = () => {
     })
   }
 
-  // Initialisiere beim Mount
-  onMounted(() => {
-    loadIcons()
-  })
-
   return {
     icons,
     filteredIcons,
