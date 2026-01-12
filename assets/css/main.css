@@ -2,25 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Globale Base Styles */
-@layer base {
-  html {
-    @apply scroll-smooth;
-  }
-
-  body {
-    @apply transition-colors duration-200;
-  }
-}
-
-/* Custom Scrollbar */
-@layer utilities {
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-}
