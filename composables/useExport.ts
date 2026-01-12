@@ -1,75 +1,72 @@
-// Composable für PNG-Export
-export const useExport = () => {
-  const exportToPNG = (
+import type { ExportSize } from '~/types/icon'
+
+// PNG Export
+export function useExport() {
+  const exportToPNG = async (
     svgElement: SVGElement,
-    size: number,
+    size: ExportSize,
     color: string,
     secondaryColor?: string
   ): Promise<Blob | null> => {
-    return new Promise((resolve) => {
-      try {
-        // Erstelle Canvas
-        const canvas = document.createElement('canvas')
-        canvas.width = size
-        canvas.height = size
+    try {
+      const canvas = document.createElement('canvas')
+      canvas.width = size
+      canvas.height = size
 
-        const ctx = canvas.getContext('2d')
-        if (!ctx) {
-          resolve(null)
-          return
-        }
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return null
 
-        // Transparenter Hintergrund
-        ctx.clearRect(0, 0, size, size)
+      ctx.clearRect(0, 0, size, size)
 
-        // Konvertiere SVG zu Datenbild
-        const svgString = new XMLSerializer().serializeToString(svgElement)
-        const svg = new Blob([svgString], { type: 'image/svg+xml' })
-        const url = URL.createObjectURL(svg)
+      const svgClone = svgElement.cloneNode(true) as SVGElement
+      svgClone.setAttribute('width', size.toString())
+      svgClone.setAttribute('height', size.toString())
 
-        // Lade SVG-Bild
+      const svgString = new XMLSerializer().serializeToString(svgClone)
+      const svg = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
+      const url = URL.createObjectURL(svg)
+
+      return new Promise((resolve) => {
         const img = new Image()
+        
         img.onload = () => {
           ctx.drawImage(img, 0, 0, size, size)
           URL.revokeObjectURL(url)
-
-          // Konvertiere zu PNG
-          canvas.toBlob((blob) => {
-            resolve(blob)
-          }, 'image/png')
+          canvas.toBlob((blob) => resolve(blob), 'image/png')
         }
+
         img.onerror = () => {
           URL.revokeObjectURL(url)
           resolve(null)
         }
+
         img.src = url
-      } catch (error) {
-        console.error('Fehler beim PNG-Export:', error)
-        resolve(null)
-      }
-    })
+      })
+    } catch (error) {
+      console.error('Export error:', error)
+      return null
+    }
   }
 
-  const downloadBlob = (blob: Blob, filename: string) => {
+  const downloadBlob = (blob: Blob, filename: string): void => {
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
     link.download = filename
+    document.body.appendChild(link)
     link.click()
+    document.body.removeChild(link)
     URL.revokeObjectURL(url)
   }
 
-  const copyToClipboard = (blob: Blob): Promise<boolean> => {
-    return new Promise((resolve) => {
-      navigator.clipboard.write([
-        new ClipboardItem({ 'image/png': blob })
-      ]).then(() => {
-        resolve(true)
-      }).catch((error) => {
-        console.error('Fehler beim Kopieren in Zwischenablage:', error)
-        resolve(false)
-      })
-    })
+  const copyToClipboard = async (blob: Blob): Promise<boolean> => {
+    try {
+      if (!navigator.clipboard?.write) return false
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+      return true
+    } catch {
+      return false
+    }
   }
 
   return {

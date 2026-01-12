@@ -1,61 +1,60 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import type { Icon, IconStyleType } from '~/types/icon'
 
-// Schnittstelle für Icon-Objekt
-interface IconStyle {
-  path: string
-}
-
-export interface Icon {
-  id: number
-  name: string
-  label: string
-  unicode: string
-  searchTerms: string[]
-  styles: {
-    solid?: IconStyle
-    regular?: IconStyle
-    duotone?: IconStyle
-  }
-}
-
-// Composable für Icon-Verwaltung
-export const useIcons = () => {
+// Icon Management
+export function useIcons() {
   const icons = ref<Icon[]>([])
-  const filteredIcons = ref<Icon[]>([])
   const searchQuery = ref('')
-  const selectedStyle = ref<'solid' | 'regular' | 'duotone'>('solid')
+  const selectedStyle = ref<IconStyleType | 'all'>('all')
+  const isLoading = ref(false)
+  const error = ref<string | null>(null)
 
-  // Lade Icons aus JSON
+  // Filter Logic
+  const filteredIcons = computed(() => {
+    let result = icons.value
+
+    if (searchQuery.value.trim()) {
+      const query = searchQuery.value.toLowerCase()
+      result = result.filter(icon => 
+        icon.name.toLowerCase().includes(query) ||
+        icon.label.toLowerCase().includes(query) ||
+        icon.searchTerms.some(term => term.toLowerCase().includes(query))
+      )
+    }
+
+    if (selectedStyle.value !== 'all') {
+      result = result.filter(icon => 
+        icon.styles[selectedStyle.value as IconStyleType] !== undefined
+      )
+    }
+
+    return result
+  })
+
+  // Load Icons
   const loadIcons = async () => {
+    isLoading.value = true
+    error.value = null
+
     try {
       const response = await fetch('/icons.json')
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
       icons.value = await response.json()
-      filterIcons()
-    } catch (error) {
-      console.error('Fehler beim Laden der Icons:', error)
+    } catch (e) {
+      error.value = e instanceof Error ? e.message : 'Load failed'
+      console.error('Icon load error:', e)
+    } finally {
+      isLoading.value = false
     }
-  }
-
-  // Filtere Icons basierend auf Suche und Stil
-  const filterIcons = () => {
-    filteredIcons.value = icons.value.filter(icon => {
-      const matchesSearch = searchQuery.value === '' || 
-        icon.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        icon.label.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        icon.searchTerms.some(term => 
-          term.toLowerCase().includes(searchQuery.value.toLowerCase())
-        )
-      
-      return matchesSearch
-    })
   }
 
   return {
     icons,
-    filteredIcons,
     searchQuery,
     selectedStyle,
-    loadIcons,
-    filterIcons
+    isLoading,
+    error,
+    filteredIcons,
+    loadIcons
   }
 }
