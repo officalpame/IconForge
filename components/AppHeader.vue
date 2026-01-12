@@ -47,7 +47,7 @@
           <!-- Dark Mode Toggle -->
           <button 
             @click="toggleDarkMode"
-            class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-900 dark:text-gray-100"
             :title="isDark ? 'Light Mode' : 'Dark Mode'"
           >
             <!-- Sun Icon (Light Mode) -->
@@ -66,6 +66,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
 defineProps<{
   modelValue: string
   selectedStyle: string
@@ -75,4 +77,22 @@ defineEmits<{
   'update:modelValue': [value: string]
   'update:selectedStyle': [value: string]
 }>()
+
+const isDark = ref(true)
+
+onMounted(() => {
+  const saved = localStorage.getItem('darkMode')
+  isDark.value = saved !== null ? JSON.parse(saved) : true
+})
+
+function toggleDarkMode() {
+  isDark.value = !isDark.value
+  if (isDark.value) {
+    document.documentElement.classList.add('dark')
+    localStorage.setItem('darkMode', JSON.stringify(true))
+  } else {
+    document.documentElement.classList.remove('dark')
+    localStorage.setItem('darkMode', JSON.stringify(false))
+  }
+}
 </script>
