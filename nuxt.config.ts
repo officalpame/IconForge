@@ -4,6 +4,11 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss'
   ],
+  tailwindcss: {
+    config: {
+      darkMode: 'class'
+    }
+  },
   css: ['~/assets/css/main.css'],
   devServer: {
     host: '0.0.0.0',
