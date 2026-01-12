@@ -1,53 +1,36 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors">
-    <AppHeader />
-
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Loading State -->
-      <div v-if="isLoading" class="flex items-center justify-center py-20">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+  <div class="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+    <div class="text-center">
+      <h1 class="text-6xl font-bold text-white mb-4">
+        Hello World! 👋
+      </h1>
+      <p class="text-2xl text-white/90 mb-8">
+        Nuxt + Tailwind funktioniert!
+      </p>
+      <button 
+        @click="count++"
+        class="bg-white text-purple-600 px-8 py-4 rounded-lg font-bold text-xl hover:bg-purple-100 transition-all transform hover:scale-105"
+      >
+        Klicks: {{ count }}
+      </button>
+      <div class="mt-8">
+        <button
+          @click="toggleDark"
+          class="bg-white/20 text-white px-6 py-2 rounded-lg hover:bg-white/30 transition-all"
+        >
+          Toggle Dark Mode
+        </button>
+        <p class="text-white/80 mt-2">Mode: {{ colorMode.value }}</p>
       </div>
-
-      <!-- Error State -->
-      <div v-else-if="error" class="flex flex-col items-center justify-center py-20">
-        <svg class="w-16 h-16 text-red-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <p class="text-red-600 dark:text-red-400 text-lg font-medium">{{ error }}</p>
-      </div>
-
-      <!-- Icon Browser -->
-      <IconBrowser
-        v-else
-        :icons="filteredIcons"
-        v-model:search-query="searchQuery"
-        v-model:selected-style="selectedStyle"
-        @select-icon="handleSelectIcon"
-      />
-    </main>
-
-    <!-- Icon Detail Modal -->
-    <IconDetailModal
-      v-model="showModal"
-      :icon="selectedIcon"
-    />
-
-    <AppFooter />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Icon } from '~/types/icon'
+const count = ref(0)
+const colorMode = useColorMode()
 
-const { filteredIcons, searchQuery, selectedStyle, isLoading, error, loadIcons } = useIcons()
-
-const showModal = ref(false)
-const selectedIcon = ref<Icon | null>(null)
-
-const handleSelectIcon = (icon: Icon) => {
-  selectedIcon.value = icon
-  showModal.value = true
+const toggleDark = () => {
+  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
 }
-
-onMounted(() => loadIcons())
 </script>
