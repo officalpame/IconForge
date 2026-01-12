@@ -9,14 +9,12 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 
-const darkMode = ref(false)
+const darkMode = ref(true)
 
 onMounted(() => {
   const saved = localStorage.getItem('darkMode')
   if (saved !== null) {
     darkMode.value = JSON.parse(saved)
-  } else {
-    darkMode.value = window.matchMedia('(prefers-color-scheme: dark)').matches
   }
   applyDarkMode()
 })
