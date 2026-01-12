@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "NUXT_DEVTOOLS=false nuxt dev --host 0.0.0.0",
     "build": "nuxt build",
-    "preview": "nuxt preview"
+    "preview": "nuxt preview",
+    "convert-icons": "node scripts/convert-icons.mjs"
   },
   "dependencies": {
     "@nuxt/ui": "^2.14.0",
