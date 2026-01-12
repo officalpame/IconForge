@@ -26,14 +26,8 @@ export default defineNuxtConfig({
       { code: 'en', file: 'en.json', name: 'English' }
     ],
     lazy: true,
-    langDir: 'locales',
-    defaultLocale: 'de',
-    strategy: 'no_prefix',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'i18n_locale',
-      redirectOn: 'root'
-    }
+    langDir: './locales',
+    defaultLocale: 'de'
   },
 
   // Color Mode (Dark Mode Support)
