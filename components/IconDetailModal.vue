@@ -1,235 +1,219 @@
 <template>
-  <UModal v-model="isOpen" :ui="{ width: 'sm:max-w-2xl' }">
-    <UCard v-if="icon">
+  <div v-if="icon" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
       <!-- Header -->
-      <template #header>
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-              {{ icon.name }}
-            </h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-              {{ icon.label }}
-            </p>
-          </div>
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-x-mark-20-solid"
-            @click="isOpen = false"
-          />
+      <div class="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-bold text-gray-900">{{ icon.label }}</h2>
+          <p class="text-sm text-gray-600">{{ icon.name }}</p>
         </div>
-      </template>
+        <button 
+          @click="$emit('close')" 
+          class="text-gray-400 hover:text-gray-600 text-2xl"
+        >
+          ✕
+        </button>
+      </div>
 
-      <div class="space-y-6">
+      <!-- Content -->
+      <div class="p-6 space-y-6">
         <!-- Icon Preview -->
-        <div class="flex items-center justify-center p-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
+        <div class="flex items-center justify-center p-8 bg-gray-50 rounded-lg">
           <svg
-            ref="svgRef"
             viewBox="0 0 512 512"
-            :style="{ color: currentColor }"
-            class="w-32 h-32 transition-all duration-300"
-            fill="currentColor"
+            :fill="isDuotone ? 'none' : primaryColor"
+            class="w-24 h-24 transition-all duration-300"
           >
-            <path v-if="currentPath" :d="currentPath" />
+            <path 
+              v-if="isDuotone" 
+              :d="getPath()" 
+              :fill="primaryColor" 
+              opacity="0.4" 
+            />
+            <path 
+              v-if="isDuotone && getPath(true)" 
+              :d="getPath(true)" 
+              :fill="secondaryColor" 
+            />
+            <path v-if="!isDuotone" :d="getPath()" />
           </svg>
         </div>
 
         <!-- Icon Info -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {{ $t('icon.name') }}
-            </label>
-            <p class="text-sm text-gray-900 dark:text-white mt-1">{{ icon.name }}</p>
+            <label class="text-xs font-medium text-gray-600">Name</label>
+            <p class="text-sm text-gray-900 font-mono mt-1">{{ icon.name }}</p>
           </div>
           <div>
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {{ $t('icon.unicode') }}
-            </label>
-            <p class="text-sm text-gray-900 dark:text-white font-mono mt-1">{{ icon.unicode }}</p>
+            <label class="text-xs font-medium text-gray-600">Unicode</label>
+            <p class="text-sm text-gray-900 font-mono mt-1">{{ icon.unicode }}</p>
           </div>
         </div>
 
         <!-- Style Selection -->
         <div>
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
-            {{ $t('icon.selectStyle') }}
-          </label>
+          <label class="text-sm font-medium text-gray-700 block mb-2">Stil</label>
           <div class="flex gap-2">
             <button
               v-for="style in availableStyles"
               :key="style"
-              @click="currentStyle = style"
+              @click="currentStyle = style as 'solid' | 'regular' | 'duotone'"
               :class="[
-                'px-4 py-2 rounded-lg text-sm font-medium transition-all',
+                'px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
                 currentStyle === style
-                  ? 'bg-primary-500 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               ]"
             >
-              {{ $t(`filter.${style}`) }}
+              {{ style }}
             </button>
           </div>
         </div>
 
-        <!-- Color Picker -->
-        <div>
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
-            {{ $t('color.primary') }}
-          </label>
-          <div class="flex gap-2">
-            <input
-              v-model="currentColor"
-              type="color"
-              class="w-12 h-10 rounded-lg cursor-pointer border-2 border-gray-300 dark:border-gray-600"
-            />
-            <input
-              v-model="currentColor"
-              type="text"
-              placeholder="#000000"
-              class="flex-1 px-3 py-2 rounded-lg border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white uppercase"
+        <!-- Color Selection -->
+        <div :class="isDuotone ? 'grid grid-cols-2 gap-4' : 'space-y-4'">
+          <div>
+            <label class="text-sm font-medium text-gray-700 block mb-2">
+              {{ isDuotone ? 'Primärfarbe' : 'Farbe' }}
+            </label>
+            <input 
+              v-model="primaryColor" 
+              type="color" 
+              class="w-full h-10 rounded-lg border border-gray-300 cursor-pointer"
             />
           </div>
-        </div>
-
-        <!-- Secondary Color für Duotone -->
-        <div v-if="currentStyle === 'duotone'">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
-            {{ $t('color.secondary') }}
-          </label>
-          <div class="flex gap-2">
-            <input
-              v-model="secondaryColor"
-              type="color"
-              class="w-12 h-10 rounded-lg cursor-pointer border-2 border-gray-300 dark:border-gray-600"
-            />
-            <input
-              v-model="secondaryColor"
-              type="text"
-              placeholder="#FF6B35"
-              class="flex-1 px-3 py-2 rounded-lg border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white uppercase"
+          <div v-if="isDuotone">
+            <label class="text-sm font-medium text-gray-700 block mb-2">Sekundärfarbe</label>
+            <input 
+              v-model="secondaryColor" 
+              type="color" 
+              class="w-full h-10 rounded-lg border border-gray-300 cursor-pointer"
             />
           </div>
         </div>
 
         <!-- Export Size -->
         <div>
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
-            {{ $t('export.size') }}
-          </label>
-          <div class="grid grid-cols-4 gap-2">
-            <button
-              v-for="size in exportSizes"
-              :key="size"
-              @click="selectedSize = size"
-              :class="[
-                'px-4 py-2 rounded-lg text-sm font-medium transition-all',
-                selectedSize === size
-                  ? 'bg-primary-500 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-              ]"
-            >
-              {{ $t(`export.size${size}`) }}
-            </button>
-          </div>
+          <label class="text-sm font-medium text-gray-700 block mb-2">Größe</label>
+          <select v-model.number="exportSize" class="w-full px-3 py-2 rounded-lg border border-gray-300">
+            <option v-for="size in [64, 128, 256, 512]" :key="size" :value="size">
+              {{ size }} × {{ size }} px
+            </option>
+          </select>
         </div>
 
-        <!-- Export Buttons -->
-        <div class="grid grid-cols-2 gap-3">
-          <UButton
-            block
-            color="primary"
-            @click="handleDownload"
-            :loading="isExporting"
+        <!-- Actions -->
+        <div class="flex gap-3">
+          <button 
+            @click="downloadPng"
+            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition"
           >
-            {{ $t('export.download') }}
-          </UButton>
-          <UButton
-            block
-            color="gray"
-            @click="handleCopy"
-            :loading="isCopying"
+            PNG herunterladen
+          </button>
+          <button 
+            @click="copySvg"
+            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 rounded-lg font-medium transition"
           >
-            {{ copiedSuccess ? $t('export.copied') : $t('export.copy') }}
-          </UButton>
+            SVG kopieren
+          </button>
         </div>
       </div>
-    </UCard>
-  </UModal>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import type { Icon, IconStyleType, ExportSize } from '~/types/icon'
+import { ref, computed } from 'vue'
+import type { Icon } from '~/types/icon'
 
-interface Props {
-  modelValue: boolean
+const props = defineProps<{
   icon: Icon | null
-}
+}>()
 
-const props = defineProps<Props>()
-const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
-const { exportToPNG, downloadBlob, copyToClipboard } = useExport()
+const emit = defineEmits<{
+  close: []
+}>()
 
-const isOpen = computed({
-  get: () => props.modelValue,
-  set: (value) => emit('update:modelValue', value)
-})
-
-const svgRef = ref<SVGElement | null>(null)
-const currentStyle = ref<IconStyleType>('solid')
-const currentColor = ref('#000000')
-const secondaryColor = ref('#FF6B35')
-const selectedSize = ref<ExportSize>(256)
-const isExporting = ref(false)
-const isCopying = ref(false)
-const copiedSuccess = ref(false)
+const primaryColor = ref('#111827')
+const secondaryColor = ref('#6B7280')
+const exportSize = ref(256)
+const currentStyle = ref<'solid' | 'regular' | 'duotone'>('solid')
 
 const availableStyles = computed(() => {
   if (!props.icon) return []
-  const styles: IconStyleType[] = []
-  if (props.icon.styles.solid) styles.push('solid')
-  if (props.icon.styles.regular) styles.push('regular')
-  if (props.icon.styles.duotone) styles.push('duotone')
-  return styles
+  return Object.keys(props.icon.styles).filter(s => props.icon?.styles[s as keyof typeof props.icon.styles])
 })
 
-const currentPath = computed(() => {
+const isDuotone = computed(() => {
+  if (!props.icon) return false
+  const styleData = props.icon.styles[currentStyle.value]
+  return styleData ? 'path2' in styleData : false
+})
+
+const getPath = (secondary = false): string => {
   if (!props.icon) return ''
-  return props.icon.styles[currentStyle.value]?.path || ''
-})
-
-const exportSizes: ExportSize[] = [64, 128, 256, 512]
-
-watch(() => props.icon, (newIcon) => {
-  if (newIcon && availableStyles.value.length > 0) {
-    currentStyle.value = availableStyles.value[0]
+  const styleData = props.icon.styles[currentStyle.value]
+  if (!styleData) return ''
+  if (secondary && 'path2' in styleData) {
+    return (styleData as any).path2
   }
-}, { immediate: true })
-
-const handleDownload = async () => {
-  if (!svgRef.value || !props.icon) return
-  isExporting.value = true
-  try {
-    const blob = await exportToPNG(svgRef.value, selectedSize.value, currentColor.value, secondaryColor.value)
-    if (blob) downloadBlob(blob, `${props.icon.name}-${selectedSize.value}px.png`)
-  } finally {
-    isExporting.value = false
-  }
+  return styleData.path
 }
 
-const handleCopy = async () => {
-  if (!svgRef.value) return
-  isCopying.value = true
-  copiedSuccess.value = false
-  try {
-    const blob = await exportToPNG(svgRef.value, selectedSize.value, currentColor.value, secondaryColor.value)
-    if (blob && await copyToClipboard(blob)) {
-      copiedSuccess.value = true
-      setTimeout(() => copiedSuccess.value = false, 2000)
-    }
-  } finally {
-    isCopying.value = false
+const downloadPng = async () => {
+  if (!props.icon) return
+  const path = getPath()
+  if (!path) return
+
+  let svgContent = ''
+  if (isDuotone.value) {
+    const path2 = getPath(true)
+    svgContent = `<path fill="${primaryColor.value}" opacity="0.4" d="${path}"/><path fill="${secondaryColor.value}" d="${path2}"/>`
+  } else {
+    svgContent = `<path fill="${primaryColor.value}" d="${path}"/>`
   }
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="${exportSize.value}" height="${exportSize.value}">${svgContent}</svg>`
+  const blob = new Blob([svg], { type: 'image/svg+xml' })
+  const url = URL.createObjectURL(blob)
+
+  const img = new Image()
+  img.onload = () => {
+    const canvas = document.createElement('canvas')
+    canvas.width = exportSize.value
+    canvas.height = exportSize.value
+    const ctx = canvas.getContext('2d')!
+    ctx.clearRect(0, 0, exportSize.value, exportSize.value)
+    ctx.drawImage(img, 0, 0)
+    canvas.toBlob((blob) => {
+      if (!blob) return
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.download = `${props.icon!.name}-${exportSize.value}.png`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    })
+    URL.revokeObjectURL(url)
+  }
+  img.src = url
+}
+
+const copySvg = async () => {
+  if (!props.icon) return
+  const path = getPath()
+  if (!path) return
+
+  let svgContent = ''
+  if (isDuotone.value) {
+    const path2 = getPath(true)
+    svgContent = `<path fill="${primaryColor.value}" opacity="0.4" d="${path}"/><path fill="${secondaryColor.value}" d="${path2}"/>`
+  } else {
+    svgContent = `<path fill="${primaryColor.value}" d="${path}"/>`
+  }
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">${svgContent}</svg>`
+  await navigator.clipboard.writeText(svg)
+  alert('SVG kopiert!')
 }
 </script>
