@@ -1,10 +1,17 @@
 {
-  "home": "Home",
-  "title": "IconForge",
-  "subtitle": "Icon Browser and PNG Exporter",
+  "app": {
+    "title": "IconForge",
+    "subtitle": "Font Awesome Icon Viewer & PNG Exporter"
+  },
+  "nav": {
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "language": "Language"
+  },
   "search": {
-    "placeholder": "Search icons...",
-    "noResults": "No icons found"
+    "placeholder": "Search icons by name, label or terms...",
+    "noResults": "No icons found",
+    "resultsCount": "{count} icon found | {count} icons found"
   },
   "filter": {
     "all": "All Styles",
@@ -13,35 +20,38 @@
     "duotone": "Duotone"
   },
   "icon": {
-    "select": "Select",
     "preview": "Preview",
-    "unicode": "Unicode",
     "name": "Name",
+    "label": "Label",
+    "unicode": "Unicode",
     "style": "Style",
-    "color": "Color",
-    "primaryColor": "Primary Color",
-    "secondaryColor": "Secondary Color"
+    "selectStyle": "Select Style"
   },
   "color": {
-    "hex": "Hex Value",
-    "rgb": "RGB Value",
-    "picker": "Color Picker"
+    "title": "Color",
+    "primary": "Primary Color",
+    "secondary": "Secondary Color",
+    "hex": "HEX",
+    "rgb": "RGB"
   },
   "export": {
     "title": "PNG Export",
     "size": "Select Size",
-    "size64": "64x64 px",
-    "size128": "128x128 px",
-    "size256": "256x256 px",
-    "size512": "512x512 px",
-    "download": "Download",
-    "copy": "Copy to Clipboard"
+    "size64": "64×64 px",
+    "size128": "128×128 px",
+    "size256": "256×256 px",
+    "size512": "512×512 px",
+    "download": "Download PNG",
+    "copy": "Copy to Clipboard",
+    "copied": "Copied!",
+    "error": "Export failed"
+  },
+  "actions": {
+    "close": "Close",
+    "select": "Select"
   },
   "footer": {
-    "madeBy": "Made by ",
-    "link": "officalpame"
-  },
-  "close": "Close",
-  "cancel": "Cancel",
-  "confirm": "Confirm"
+    "madeWith": "Made with",
+    "by": "by"
+  }
 }

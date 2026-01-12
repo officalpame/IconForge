@@ -1,10 +1,17 @@
 {
-  "home": "Startseite",
-  "title": "IconForge",
-  "subtitle": "Icon-Browser und PNG-Exporter",
+  "app": {
+    "title": "IconForge",
+    "subtitle": "Font Awesome Icon Viewer & PNG Exporter"
+  },
+  "nav": {
+    "darkMode": "Dunkelmodus",
+    "lightMode": "Hellmodus",
+    "language": "Sprache"
+  },
   "search": {
-    "placeholder": "Icons durchsuchen...",
-    "noResults": "Keine Symbole gefunden"
+    "placeholder": "Icons durchsuchen nach Name, Label oder Suchbegriffen...",
+    "noResults": "Keine Icons gefunden",
+    "resultsCount": "{count} Icon gefunden | {count} Icons gefunden"
   },
   "filter": {
     "all": "Alle Stile",
@@ -13,35 +20,38 @@
     "duotone": "Duotone"
   },
   "icon": {
-    "select": "Wählen",
     "preview": "Vorschau",
-    "unicode": "Unicode",
     "name": "Name",
+    "label": "Bezeichnung",
+    "unicode": "Unicode",
     "style": "Stil",
-    "color": "Farbe",
-    "primaryColor": "Primärfarbe",
-    "secondaryColor": "Sekundärfarbe"
+    "selectStyle": "Stil auswählen"
   },
   "color": {
-    "hex": "Hex-Wert",
-    "rgb": "RGB-Wert",
-    "picker": "Farbwähler"
+    "title": "Farbe",
+    "primary": "Primärfarbe",
+    "secondary": "Sekundärfarbe",
+    "hex": "HEX",
+    "rgb": "RGB"
   },
   "export": {
-    "title": "PNG-Export",
-    "size": "Größe wählen",
-    "size64": "64x64 px",
-    "size128": "128x128 px",
-    "size256": "256x256 px",
-    "size512": "512x512 px",
-    "download": "Download",
-    "copy": "In Zwischenablage kopieren"
+    "title": "PNG Export",
+    "size": "Größe auswählen",
+    "size64": "64×64 px",
+    "size128": "128×128 px",
+    "size256": "256×256 px",
+    "size512": "512×512 px",
+    "download": "PNG herunterladen",
+    "copy": "In Zwischenablage kopieren",
+    "copied": "Kopiert!",
+    "error": "Export fehlgeschlagen"
+  },
+  "actions": {
+    "close": "Schließen",
+    "select": "Auswählen"
   },
   "footer": {
-    "madeBy": "Erstellt von ",
-    "link": "officalpame"
-  },
-  "close": "Schließen",
-  "cancel": "Abbrechen",
-  "confirm": "Bestätigen"
+    "madeWith": "Erstellt mit",
+    "by": "von"
+  }
 }
