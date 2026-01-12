@@ -20,7 +20,7 @@
         <!-- Icon Preview -->
         <div class="flex items-center justify-center p-8 bg-gray-50 rounded-lg">
           <svg
-            viewBox="0 0 512 512"
+            :viewBox="getViewBox()"
             :fill="isDuotone ? 'none' : primaryColor"
             class="w-24 h-24 transition-all duration-300"
           >
