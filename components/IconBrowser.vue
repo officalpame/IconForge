@@ -84,7 +84,6 @@
 <script setup lang="ts">
 import type { Icon, IconStyleType } from '~/types/icon'
 
-// Props
 interface Props {
   icons: Icon[]
   searchQuery: string
@@ -97,26 +96,17 @@ const props = withDefaults(defineProps<Props>(), {
   selectedStyle: 'all'
 })
 
-// Emits
 defineEmits<{
   selectIcon: [icon: Icon]
   'update:searchQuery': [query: string]
   'update:selectedStyle': [style: IconStyleType | 'all']
 }>()
 
-// Lokale Kopie des Suchbegriffs
 const localSearch = ref(props.searchQuery)
-
-// Verfügbare Stile
 const styles = ['all', 'solid', 'regular', 'duotone'] as const
 
-/**
- * Gibt den SVG-Pfad für ein Icon zurück
- * Je nach ausgewähltem Stil wird der entsprechende Pfad zurückgegeben
- */
 const getIconPath = (icon: Icon): string | undefined => {
   if (props.selectedStyle === 'all') {
-    // Ersten verfügbaren Stil verwenden
     return icon.styles.solid?.path || icon.styles.regular?.path || icon.styles.duotone?.path
   }
   return icon.styles[props.selectedStyle]?.path
