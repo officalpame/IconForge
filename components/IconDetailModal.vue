@@ -1,122 +1,133 @@
 <template>
-  <div v-if="modelValue" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-      <div class="p-6 space-y-6">
-        <!-- Vorschau -->
-        <div class="flex flex-col items-center justify-center p-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
+  <UModal v-model="isOpen" :ui="{ width: 'sm:max-w-2xl' }">
+    <UCard v-if="icon">
+      <!-- Header -->
+      <template #header>
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+              {{ icon.name }}
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              {{ icon.label }}
+            </p>
+          </div>
+          <UButton
+            color="gray"
+            variant="ghost"
+            icon="i-heroicons-x-mark-20-solid"
+            @click="isOpen = false"
+          />
+        </div>
+      </template>
+
+      <div class="space-y-6">
+        <!-- Icon Preview -->
+        <div class="flex items-center justify-center p-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
           <svg
-            v-if="icon && icon.styles[currentStyle as keyof typeof icon.styles]"
             ref="svgRef"
             viewBox="0 0 512 512"
-            class="w-24 h-24 transition-all duration-300"
             :style="{ color: currentColor }"
+            class="w-32 h-32 transition-all duration-300"
             fill="currentColor"
           >
-            <path
-              :d="icon.styles[currentStyle as keyof typeof icon.styles]?.path"
-            />
+            <path v-if="currentPath" :d="currentPath" />
           </svg>
-          <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-            {{ $t('icon.preview') }}
-          </p>
         </div>
 
-        <!-- Icon Informationen -->
-        <div class="space-y-2">
+        <!-- Icon Info -->
+        <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
               {{ $t('icon.name') }}
             </label>
-            <p class="text-gray-900 dark:text-white mt-1">{{ icon?.name }}</p>
+            <p class="text-sm text-gray-900 dark:text-white mt-1">{{ icon.name }}</p>
           </div>
           <div>
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
               {{ $t('icon.unicode') }}
             </label>
-            <p class="text-gray-900 dark:text-white mt-1 font-mono">{{ icon?.unicode }}</p>
+            <p class="text-sm text-gray-900 dark:text-white font-mono mt-1">{{ icon.unicode }}</p>
           </div>
         </div>
 
-        <!-- Stil-Auswahl -->
+        <!-- Style Selection -->
         <div>
           <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
-            {{ $t('icon.style') }}
+            {{ $t('icon.selectStyle') }}
           </label>
-          <div class="grid grid-cols-3 gap-2">
+          <div class="flex gap-2">
             <button
-              v-for="style in ['solid', 'regular', 'duotone']"
+              v-for="style in availableStyles"
               :key="style"
-              @click="currentStyle = style as any"
+              @click="currentStyle = style"
               :class="[
-                'px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                 currentStyle === style
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300'
+                  ? 'bg-primary-500 text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
               ]"
-              :disabled="!icon?.styles[style as keyof typeof icon.styles]"
             >
               {{ $t(`filter.${style}`) }}
             </button>
           </div>
         </div>
 
-        <!-- Farb-Auswahl -->
+        <!-- Color Picker -->
         <div>
           <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
-            {{ $t('icon.color') }}
+            {{ $t('color.primary') }}
           </label>
-          <div class="flex space-x-2">
+          <div class="flex gap-2">
             <input
               v-model="currentColor"
               type="color"
-              class="w-12 h-10 rounded-lg cursor-pointer border border-gray-300 dark:border-gray-600"
+              class="w-12 h-10 rounded-lg cursor-pointer border-2 border-gray-300 dark:border-gray-600"
             />
             <input
-              :value="currentColor"
+              v-model="currentColor"
               type="text"
-              class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               placeholder="#000000"
-              @change="updateColor"
+              class="flex-1 px-3 py-2 rounded-lg border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white uppercase"
             />
           </div>
         </div>
 
-        <!-- Duotone Sekundärfarbe -->
+        <!-- Secondary Color für Duotone -->
         <div v-if="currentStyle === 'duotone'">
           <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
-            {{ $t('icon.secondaryColor') }}
+            {{ $t('color.secondary') }}
           </label>
-          <div class="flex space-x-2">
+          <div class="flex gap-2">
             <input
               v-model="secondaryColor"
               type="color"
-              class="w-12 h-10 rounded-lg cursor-pointer border border-gray-300 dark:border-gray-600"
+              class="w-12 h-10 rounded-lg cursor-pointer border-2 border-gray-300 dark:border-gray-600"
             />
             <input
-              :value="secondaryColor"
+              v-model="secondaryColor"
               type="text"
-              class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-              placeholder="#000000"
-              @change="updateSecondaryColor"
+              placeholder="#FF6B35"
+              class="flex-1 px-3 py-2 rounded-lg border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white uppercase"
             />
           </div>
         </div>
 
-        <!-- Export Größen -->
+        <!-- Export Size -->
         <div>
           <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
             {{ $t('export.size') }}
           </label>
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-4 gap-2">
             <button
-              v-for="size in [64, 128, 256, 512]"
+              v-for="size in exportSizes"
               :key="size"
               @click="selectedSize = size"
               :class="[
-                'px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                 selectedSize === size
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300'
+                  ? 'bg-primary-500 text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
               ]"
             >
               {{ $t(`export.size${size}`) }}
@@ -125,365 +136,134 @@
         </div>
 
         <!-- Export Buttons -->
-        <div class="grid grid-cols-2 gap-2 pt-4">
-          <button
-            @click="exportPNG"
-            class="px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors duration-200"
+        <div class="grid grid-cols-2 gap-3">
+          <UButton
+            block
+            color="primary"
+            @click="handleDownload"
+            :loading="isExporting"
           >
             {{ $t('export.download') }}
-          </button>
-          <button
-            @click="copyClipboard"
-            class="px-4 py-2 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors duration-200"
+          </UButton>
+          <UButton
+            block
+            color="gray"
+            @click="handleCopy"
+            :loading="isCopying"
           >
-            {{ $t('export.copy') }}
-          </button>
+            {{ copiedSuccess ? $t('export.copied') : $t('export.copy') }}
+          </UButton>
         </div>
-
-        <!-- Schließen Button -->
-        <button
-          @click="closeModal"
-          class="w-full px-4 py-2 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-        >
-          {{ $t('close') }}
-        </button>
       </div>
-    </div>
-  </div>
+    </UCard>
+  </UModal>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useColor } from '~/composables/useColor'
-import { useExport } from '~/composables/useExport'
+import type { Icon, IconStyleType, ExportSize } from '~/types/icon'
 
-interface Icon {
-  id: number
-  name: string
-  label: string
-  unicode: string
-  searchTerms: string[]
-  styles: Record<string, { path: string }>
-}
-
+// Props
 interface Props {
   modelValue: boolean
   icon: Icon | null
 }
 
-interface Emits {
-  (e: 'update:modelValue', value: boolean): void
-}
+const props = defineProps<Props>()
 
-const props = withDefaults(defineProps<Props>(), {
-  modelValue: false,
-  icon: null
-})
-
-const emit = defineEmits<Emits>()
-
-const svgRef = ref<SVGElement | null>(null)
-const currentColor = ref('#000000')
-const secondaryColor = ref('#FF6B35')
-const currentStyle = ref<'solid' | 'regular' | 'duotone'>('solid')
-const selectedSize = ref(256)
-
-const { validateHex } = useColor()
-const { exportToPNG, downloadBlob, copyToClipboard: clipboardCopy } = useExport()
-
-const closeModal = () => {
-  emit('update:modelValue', false)
-}
-
-const updateColor = (e: Event) => {
-  const target = e.target as HTMLInputElement
-  if (validateHex(target.value)) {
-    currentColor.value = target.value
-  }
-}
-
-const updateSecondaryColor = (e: Event) => {
-  const target = e.target as HTMLInputElement
-  if (validateHex(target.value)) {
-    secondaryColor.value = target.value
-  }
-}
-
-const exportPNG = () => {
-  if (!svgRef.value) return
-
-  exportToPNG(
-    svgRef.value,
-    selectedSize.value,
-    currentColor.value,
-    secondaryColor.value
-  ).then((blob) => {
-    if (blob) {
-      const filename = `${props.icon?.name}-${selectedSize.value}px.png`
-      downloadBlob(blob, filename)
-    }
-  })
-}
-
-const copyClipboard = () => {
-  if (!svgRef.value) return
-
-  exportToPNG(
-    svgRef.value,
-    selectedSize.value,
-    currentColor.value,
-    secondaryColor.value
-  ).then((blob) => {
-    if (blob) {
-      clipboardCopy(blob).then((success) => {
-        if (success) {
-          console.log('In Zwischenablage kopiert!')
-        }
-      })
-    }
-  })
-</script>
-
-<style scoped>
-</style>
-      <div class="flex flex-col items-center justify-center p-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
-        <svg
-          v-if="icon && icon.styles[currentStyle as keyof typeof icon.styles]"
-          ref="svgRef"
-          viewBox="0 0 512 512"
-          class="w-24 h-24 transition-all duration-300"
-          :style="{ color: currentColor }"
-          fill="currentColor"
-        >
-          <path
-            :d="icon.styles[currentStyle as keyof typeof icon.styles]?.path"
-          />
-        </svg>
-        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-          {{ $t('icon.preview') }}
-        </p>
-      </div>
-
-      <!-- Icon Informationen -->
-      <div class="space-y-2">
-        <div>
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {{ $t('icon.name') }}
-          </label>
-          <p class="text-gray-900 dark:text-white mt-1">{{ icon?.name }}</p>
-        </div>
-        <div>
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {{ $t('icon.unicode') }}
-          </label>
-          <p class="text-gray-900 dark:text-white mt-1 font-mono">{{ icon?.unicode }}</p>
-        </div>
-      </div>
-
-      <!-- Stil-Auswahl -->
-      <div>
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
-          {{ $t('icon.style') }}
-        </label>
-        <div class="grid grid-cols-3 gap-2">
-          <button
-            v-for="style in ['solid', 'regular', 'duotone']"
-            :key="style"
-            @click="currentStyle = style as any"
-            :class="[
-              'px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
-              currentStyle === style
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300'
-            ]"
-            :disabled="!icon?.styles[style as keyof typeof icon.styles]"
-          >
-            {{ $t(`filter.${style}`) }}
-          </button>
-        </div>
-      </div>
-
-      <!-- Farb-Auswahl -->
-      <div>
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
-          {{ $t('icon.color') }}
-        </label>
-        <div class="flex space-x-2">
-          <input
-            v-model="currentColor"
-            type="color"
-            class="w-12 h-10 rounded-lg cursor-pointer border border-gray-300 dark:border-gray-600"
-          />
-          <input
-            :value="currentColor"
-            type="text"
-            class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-            placeholder="#000000"
-            @change="(e: Event) => {
-              const target = e.target as HTMLInputElement
-              if (validateHex(target.value)) {
-                currentColor = target.value
-              }
-            }"
-          />
-        </div>
-      </div>
-
-      <!-- Duotone Sekundärfarbe -->
-      <div v-if="currentStyle === 'duotone'">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
-          {{ $t('icon.secondaryColor') }}
-        </label>
-        <div class="flex space-x-2">
-          <input
-            v-model="secondaryColor"
-            type="color"
-            class="w-12 h-10 rounded-lg cursor-pointer border border-gray-300 dark:border-gray-600"
-          />
-          <input
-            :value="secondaryColor"
-            type="text"
-            class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-            placeholder="#000000"
-            @change="(e: Event) => {
-              const target = e.target as HTMLInputElement
-              if (validateHex(target.value)) {
-                secondaryColor = target.value
-              }
-            }"
-          />
-        </div>
-      </div>
-
-      <!-- Export Größen -->
-      <div>
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
-          {{ $t('export.size') }}
-        </label>
-        <div class="grid grid-cols-2 gap-2">
-          <button
-            v-for="size in [64, 128, 256, 512]"
-            :key="size"
-            @click="selectedSize = size"
-            :class="[
-              'px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
-              selectedSize === size
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300'
-            ]"
-          >
-            {{ $t(`export.size${size}`) }}
-          </button>
-        </div>
-      </div>
-
-      <!-- Export Buttons -->
-      <div class="grid grid-cols-2 gap-2 pt-4">
-        <button
-          @click="exportPNG"
-          class="px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors duration-200"
-        >
-          {{ $t('export.download') }}
-        </button>
-        <button
-          @click="copyClipboard"
-          class="px-4 py-2 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors duration-200"
-        >
-          {{ $t('export.copy') }}
-        </button>
-      </div>
-
-      <!-- Schließen Button -->
-      <button
-        @click="closeModal"
-        class="w-full px-4 py-2 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-      >
-        {{ $t('close') }}
-      </button>
-    </div>
-  </UModal>
-</template>
-
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useColor } from '~/composables/useColor'
-import { useExport } from '~/composables/useExport'
-
-declare const defineProps: any
-declare const defineEmits: any
-
-interface Icon {
-  id: number
-  name: string
-  label: string
-  unicode: string
-  searchTerms: string[]
-  styles: Record<string, { path: string }>
-}
-
-const props = defineProps<{
-  modelValue: boolean
-  icon: Icon | null
-}>()
-
+// Emits
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
 }>()
 
-const svgRef = ref<SVGElement | null>(null)
-const currentColor = ref('#000000')
-const secondaryColor = ref('#FF6B35')
-const currentStyle = ref<'solid' | 'regular' | 'duotone'>('solid')
-const selectedSize = ref(256)
+// Composables
+const { exportToPNG, downloadBlob, copyToClipboard } = useExport()
 
-const { validateHex } = useColor()
-const { exportToPNG, downloadBlob, copyToClipboard: clipboardCopy } = useExport()
-
+// Modal State
 const isOpen = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value)
 })
 
-const closeModal = () => {
-  emit('update:modelValue', false)
-}
+// Reaktive States
+const svgRef = ref<SVGElement | null>(null)
+const currentStyle = ref<IconStyleType>('solid')
+const currentColor = ref('#000000')
+const secondaryColor = ref('#FF6B35')
+const selectedSize = ref<ExportSize>(256)
+const isExporting = ref(false)
+const isCopying = ref(false)
+const copiedSuccess = ref(false)
 
-const exportPNG = () => {
-  if (!svgRef.value) return
+// Verfügbare Stile für aktuelles Icon
+const availableStyles = computed(() => {
+  if (!props.icon) return []
+  const styles: IconStyleType[] = []
+  if (props.icon.styles.solid) styles.push('solid')
+  if (props.icon.styles.regular) styles.push('regular')
+  if (props.icon.styles.duotone) styles.push('duotone')
+  return styles
+})
 
-  exportToPNG(
-    svgRef.value,
-    selectedSize.value,
-    currentColor.value,
-    secondaryColor.value
-  ).then((blob) => {
+// Aktueller SVG-Pfad
+const currentPath = computed(() => {
+  if (!props.icon) return ''
+  return props.icon.styles[currentStyle.value]?.path || ''
+})
+
+// Export-Größen
+const exportSizes: ExportSize[] = [64, 128, 256, 512]
+
+// Icon-Wechsel: Setze ersten verfügbaren Stil
+watch(() => props.icon, (newIcon) => {
+  if (newIcon && availableStyles.value.length > 0) {
+    currentStyle.value = availableStyles.value[0]
+  }
+}, { immediate: true })
+
+/**
+ * PNG Download
+ */
+const handleDownload = async () => {
+  if (!svgRef.value || !props.icon) return
+
+  isExporting.value = true
+  try {
+    const blob = await exportToPNG(svgRef.value, selectedSize.value, currentColor.value, secondaryColor.value)
     if (blob) {
-      const filename = `${props.icon?.name}-${selectedSize.value}px.png`
+      const filename = `${props.icon.name}-${selectedSize.value}px.png`
       downloadBlob(blob, filename)
     }
-  })
+  } catch (error) {
+    console.error('Download-Fehler:', error)
+  } finally {
+    isExporting.value = false
+  }
 }
 
-const copyClipboard = () => {
+/**
+ * In Zwischenablage kopieren
+ */
+const handleCopy = async () => {
   if (!svgRef.value) return
 
-  exportToPNG(
-    svgRef.value,
-    selectedSize.value,
-    currentColor.value,
-    secondaryColor.value
-  ).then((blob) => {
+  isCopying.value = true
+  copiedSuccess.value = false
+  
+  try {
+    const blob = await exportToPNG(svgRef.value, selectedSize.value, currentColor.value, secondaryColor.value)
     if (blob) {
-      clipboardCopy(blob).then((success) => {
-        if (success) {
-          console.log('In Zwischenablage kopiert!')
-        }
-      })
+      const success = await copyToClipboard(blob)
+      if (success) {
+        copiedSuccess.value = true
+        setTimeout(() => {
+          copiedSuccess.value = false
+        }, 2000)
+      }
     }
-  })
+  } catch (error) {
+    console.error('Clipboard-Fehler:', error)
+  } finally {
+    isCopying.value = false
+  }
 }
 </script>
-
-<style scoped>
-/* Icon Detail Modal Styling */
-</style>

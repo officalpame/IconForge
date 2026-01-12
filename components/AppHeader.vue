@@ -1,78 +1,72 @@
 <template>
-  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800">
+  <header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex items-center justify-between">
-        <!-- Logo -->
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
-            IF
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-xl">IF</span>
           </div>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-            {{ $t('title') }}
-          </h1>
+          <div>
+            <h1 class="text-xl font-bold text-gray-900 dark:text-white">
+              {{ $t('app.title') }}
+            </h1>
+            <p class="text-xs text-gray-600 dark:text-gray-400">
+              {{ $t('app.subtitle') }}
+            </p>
+          </div>
         </div>
 
         <!-- Controls -->
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center gap-3">
           <!-- Language Switcher -->
-          <div class="flex space-x-2">
+          <div class="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
             <button
-              v-for="locale in ['de', 'en']"
-              :key="locale"
-              @click="$i18n.locale = locale"
+              v-for="loc in availableLocales"
+              :key="loc.code"
+              @click="locale = loc.code"
               :class="[
-                'px-3 py-1 rounded-md text-sm font-medium transition-all duration-200',
-                $i18n.locale === locale
-                  ? 'bg-blue-500 text-white'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                'px-3 py-1.5 text-sm font-medium rounded-md transition-all',
+                locale === loc.code
+                  ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               ]"
             >
-              {{ locale.toUpperCase() }}
+              {{ loc.code.toUpperCase() }}
             </button>
           </div>
 
           <!-- Dark Mode Toggle -->
           <button
-            @click="$colorMode.preference = $colorMode.preference === 'dark' ? 'light' : 'dark'"
-            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-            :title="$t('icon.color')"
+            @click="toggleDark"
+            class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            :title="isDark ? $t('nav.lightMode') : $t('nav.darkMode')"
           >
-            <svg
-              v-if="$colorMode.preference === 'light'"
-              class="w-5 h-5 text-gray-700"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            <svg v-if="isDark" class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
             </svg>
-            <svg
-              v-else
-              class="w-5 h-5 text-yellow-500"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10 2a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.536l1.414 1.414a1 1 0 001.414-1.414l-1.414-1.414a1 1 0 00-1.414 1.414zm2.828-2.828a1 1 0 011.414 0l1.414 1.414a1 1 0 11-1.414 1.414l-1.414-1.414a1 1 0 010-1.414zM13 11a1 1 0 110 2h-2a1 1 0 110-2h2zm-6 0a1 1 0 110 2H5a1 1 0 110-2h2z"
-                clip-rule="evenodd"
-              ></path>
+            <svg v-else class="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
             </svg>
           </button>
         </div>
       </div>
-
-      <!-- Subtitle -->
-      <p class="text-gray-600 dark:text-gray-400 text-sm mt-2">
-        {{ $t('subtitle') }}
-      </p>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-// Header-Komponente
-</script>
+const { locale, locales } = useI18n()
+const colorMode = useColorMode()
 
-<style scoped>
-/* Header Styling */
-</style>
+// Verfügbare Sprachen
+const availableLocales = locales.value
+
+// Dark Mode State
+const isDark = computed(() => colorMode.value === 'dark')
+
+// Toggle Dark Mode
+const toggleDark = () => {
+  colorMode.preference = isDark.value ? 'light' : 'dark'
+}
+</script>
