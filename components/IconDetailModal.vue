@@ -1,11 +1,11 @@
 <template>
   <div v-if="icon" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
       <!-- Header -->
-      <div class="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+      <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between">
         <div>
-          <h2 class="text-xl font-bold text-gray-900">{{ icon.label }}</h2>
-          <p class="text-sm text-gray-600">{{ icon.name }}</p>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ icon.label }}</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">{{ icon.name }}</p>
         </div>
         <button 
           @click="$emit('close')" 
@@ -18,7 +18,7 @@
       <!-- Content -->
       <div class="p-6 space-y-6">
         <!-- Icon Preview -->
-        <div class="flex items-center justify-center p-8 bg-gray-50 rounded-lg">
+        <div class="flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <svg
             viewBox="0 0 512 512"
             :fill="isDuotone ? 'none' : primaryColor"
@@ -42,18 +42,18 @@
         <!-- Icon Info -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="text-xs font-medium text-gray-600">Name</label>
-            <p class="text-sm text-gray-900 font-mono mt-1">{{ icon.name }}</p>
+            <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Name</label>
+            <p class="text-sm text-gray-900 dark:text-white font-mono mt-1">{{ icon.name }}</p>
           </div>
           <div>
-            <label class="text-xs font-medium text-gray-600">Unicode</label>
-            <p class="text-sm text-gray-900 font-mono mt-1">{{ icon.unicode }}</p>
+            <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Unicode</label>
+            <p class="text-sm text-gray-900 dark:text-white font-mono mt-1">{{ icon.unicode }}</p>
           </div>
         </div>
 
         <!-- Style Selection -->
         <div>
-          <label class="text-sm font-medium text-gray-700 block mb-2">Stil</label>
+          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">Stil</label>
           <div class="flex gap-2">
             <button
               v-for="style in availableStyles"
@@ -63,7 +63,7 @@
                 'px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
                 currentStyle === style
                   ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               ]"
             >
               {{ style }}
@@ -74,29 +74,29 @@
         <!-- Color Selection -->
         <div :class="isDuotone ? 'grid grid-cols-2 gap-4' : 'space-y-4'">
           <div>
-            <label class="text-sm font-medium text-gray-700 block mb-2">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
               {{ isDuotone ? 'Primärfarbe' : 'Farbe' }}
             </label>
             <input 
               v-model="primaryColor" 
               type="color" 
-              class="w-full h-10 rounded-lg border border-gray-300 cursor-pointer"
+              class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer"
             />
           </div>
           <div v-if="isDuotone">
-            <label class="text-sm font-medium text-gray-700 block mb-2">Sekundärfarbe</label>
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">Sekundärfarbe</label>
             <input 
               v-model="secondaryColor" 
               type="color" 
-              class="w-full h-10 rounded-lg border border-gray-300 cursor-pointer"
+              class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer"
             />
           </div>
         </div>
 
         <!-- Export Size -->
         <div>
-          <label class="text-sm font-medium text-gray-700 block mb-2">Größe</label>
-          <select v-model.number="exportSize" class="w-full px-3 py-2 rounded-lg border border-gray-300">
+          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">Größe</label>
+          <select v-model.number="exportSize" class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
             <option v-for="size in [64, 128, 256, 512]" :key="size" :value="size">
               {{ size }} × {{ size }} px
             </option>
@@ -113,7 +113,7 @@
           </button>
           <button 
             @click="copySvg"
-            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 rounded-lg font-medium transition"
+            class="flex-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white py-2 rounded-lg font-medium transition"
           >
             SVG kopieren
           </button>
