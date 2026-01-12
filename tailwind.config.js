@@ -1,10 +1,13 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
-    './components/**/*.{js,vue,ts}',
+    './components/**/*.{vue,js,ts}',
+    './layouts/**/*.vue',
     './pages/**/*.vue',
-    './app.vue',
+    './plugins/**/*.{js,ts}',
+    './app.vue'
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -24,25 +27,24 @@ module.exports = {
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',
-        'slide-in': 'slideIn 0.3s ease-in-out',
-        'scale-in': 'scaleIn 0.2s ease-in-out'
+        'slide-up': 'slideUp 0.3s ease-out',
+        'scale-in': 'scaleIn 0.2s ease-out'
       },
       keyframes: {
         fadeIn: {
-          'from': { opacity: '0' },
-          'to': { opacity: '1' }
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' }
         },
-        slideIn: {
-          'from': { opacity: '0', transform: 'translateY(8px)' },
-          'to': { opacity: '1', transform: 'translateY(0)' }
+        slideUp: {
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' }
         },
         scaleIn: {
-          'from': { opacity: '0', transform: 'scale(0.95)' },
-          'to': { opacity: '1', transform: 'scale(1)' }
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' }
         }
       }
     }
   },
-  plugins: [],
-  darkMode: 'class'
+  plugins: []
 }
