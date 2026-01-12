@@ -19,7 +19,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: 'IconForge - Font Awesome Icon Viewer & PNG Exporter',
+      title: 'IconForge',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: 'Browse, customize and export Font Awesome icons as PNG' }
