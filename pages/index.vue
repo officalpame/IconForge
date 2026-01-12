@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col min-h-screen bg-white text-gray-900">
+  <div class="flex flex-col min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
     <!-- Header -->
     <AppHeader 
       v-model="search"
@@ -10,14 +10,14 @@
     <!-- Main Content -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div v-if="loading" class="text-center py-16">
-        <p class="text-gray-600">Icons werden geladen...</p>
+        <p class="text-gray-600 dark:text-gray-400">Icons werden geladen...</p>
       </div>
       <div v-else-if="error" class="text-center py-16">
-        <p class="text-red-600">{{ error }}</p>
+        <p class="text-red-600 dark:text-red-400">{{ error }}</p>
       </div>
       <div v-else>
         <div class="mb-6">
-          <p class="text-sm text-gray-600">{{ filteredIcons.length }} Icons gefunden</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">{{ filteredIcons.length }} Icons gefunden</p>
         </div>
         
         <!-- Browser Component -->
@@ -30,7 +30,7 @@
         <div v-if="hasMore" class="text-center mt-8">
           <button 
             @click="loadMore"
-            class="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg transition font-medium"
+            class="px-6 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white rounded-lg transition font-medium"
           >
             Mehr laden ({{ filteredIcons.length - displayedCount }} verbleibend)
           </button>
