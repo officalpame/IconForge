@@ -43,6 +43,14 @@ export default defineNuxtConfig({
     configPath: 'tailwind.config.js'
   },
 
+  // PostCSS Configuration
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {}
+    }
+  },
+
   // Globale CSS
   css: ['~/assets/css/main.css'],
 
