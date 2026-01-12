@@ -1,16 +1,10 @@
 // Icon Types
 export interface IconStyle {
   path: string
-  // Optional second path for duotone icons
-  path2?: string
-  // Optional viewBox and dimensions
-  viewBox?: number[]
-  width?: number
-  height?: number
 }
 
 export interface Icon {
-  id: string
+  id: number
   name: string
   label: string
   unicode: string
