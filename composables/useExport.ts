@@ -60,16 +60,15 @@ export const useExport = () => {
   }
 
   const copyToClipboard = (blob: Blob): Promise<boolean> => {
-    return new Promise(async (resolve) => {
-      try {
-        await navigator.clipboard.write([
-          new ClipboardItem({ 'image/png': blob })
-        ])
+    return new Promise((resolve) => {
+      navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': blob })
+      ]).then(() => {
         resolve(true)
-      } catch (error) {
+      }).catch((error) => {
         console.error('Fehler beim Kopieren in Zwischenablage:', error)
         resolve(false)
-      }
+      })
     })
   }
 
