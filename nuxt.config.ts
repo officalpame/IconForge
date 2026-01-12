@@ -9,7 +9,14 @@ export default defineNuxtConfig({
     host: '0.0.0.0',
     port: 3000
   },
-  devtools: { enabled: false },
+  vite: {
+    server: {
+      hmr: {
+        clientPort: 3000,
+        protocol: 'wss'
+      }
+    }
+  },
   app: {
     head: {
       title: 'IconForge - Font Awesome Icon Viewer & PNG Exporter',
