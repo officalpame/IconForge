@@ -59,14 +59,7 @@
 const { locale, locales } = useI18n()
 const colorMode = useColorMode()
 
-// Verfügbare Sprachen
 const availableLocales = locales.value
-
-// Dark Mode State
 const isDark = computed(() => colorMode.value === 'dark')
-
-// Toggle Dark Mode
-const toggleDark = () => {
-  colorMode.preference = isDark.value ? 'light' : 'dark'
-}
+const toggleDark = () => colorMode.preference = isDark.value ? 'light' : 'dark'
 </script>
