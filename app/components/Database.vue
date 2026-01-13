@@ -114,9 +114,23 @@
               <path v-if = "!isDuotone" :d = "modalPath"/>
             </svg>
           </div>
+            <!-- Icon-Typ-Auswahl -->
+            <div class="flex gap-4 items-center">
+              <label class="text-sm dark:text-white">Typ:</label>
+              <select v-model="activeStyle" class="border rounded px-2 py-1 dark:bg-gray-800 dark:text-white">
+                <option v-for="style in availableStyles" :key="style" :value="style">{{ style.charAt(0).toUpperCase() + style.slice(1) }}</option>
+              </select>
+            </div>
+
+            <!-- SVG-ID kopieren -->
+            <div class="flex gap-2 items-center mt-2">
+              <span class="text-xs dark:text-white ml-4">Unicode:</span>
+              <span class="text-xs font-mono px-2 py-1 rounded bg-gray-200 dark:bg-gray-700">{{ unicodeHex }}</span>
+              <button @click="copyUnicode" class="px-2 py-1 text-xs rounded bg-blue-500 text-white hover:bg-blue-600">Kopieren</button>
+            </div>
 
 
-
+<!-- Farbe Auswählen --> 
           <div class = "flex gap-4" >
             <input type = "color" v-model = "primary" />
             <input v-if = "isDuotone" type = "color" v-model = "secondary" />
@@ -146,14 +160,15 @@
   </div>
 </template>
 
+
+
+
+
 <script setup lang="ts">
 
 
 
-
-
-
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import type { Icon as IconType } from '~/types/icon'
 
 const dark = ref(false)
@@ -182,7 +197,26 @@ const current = ref<IconType|null>(null)
 const primary = ref('#111827')
 const secondary = ref('#6B7280')
 const size = ref(256)
-const activeStyle = ref<'solid'|'regular'|'duotone'>('solid')
+const activeStyle = ref('solid')
+
+// Styles die für das aktuelle Icon verfügbar sind
+const availableStyles = computed(() => {
+  return current.value?.styles || Object.keys(current.value?.svg || {}) || []
+})
+
+// Unicode als Hex anzeigen
+const unicodeHex = computed(() => {
+  if (!current.value) return ''
+  let uni = current.value.unicode || (current.value.unicodes?.secondary?.[0] ?? '')
+  return uni ? uni.replace(/^10/, 'f') : ''
+})
+
+// Unicode kopieren
+async function copyUnicode() {
+  if (!current.value) return
+  let uni = unicodeHex.value
+  await navigator.clipboard.writeText(uni)
+}
 
 
 
@@ -227,10 +261,12 @@ function toggleTheme( ) {
   localStorage.setItem('darkMode', String(dark.value))
 }
 
+
 function iconPath(icon: IconType) {
   const d = icon.svg?.solid || icon.svg?.regular || icon.svg?.duotone
   return typeof d === 'object' ? (d as any).path : ''
 }
+
 
 function iconViewBox(icon: IconType) {
   const d = icon.svg?.solid || icon.svg?.regular || icon.svg?.duotone
@@ -238,24 +274,32 @@ function iconViewBox(icon: IconType) {
   return Array.isArray(vb) ? vb.join(' ') : vb || '0 0 512 512'
 }
 
+
 function open(icon: IconType) {
   current.value = icon
+  // Style-Auswahl immer auf ersten verfügbaren Style setzen
+  const styles = icon.styles || Object.keys(icon.svg || {})
+  activeStyle.value = styles[0] || 'solid'
 }
+
 
 const isDuotone = computed(() => {
   const s = current.value?.svg?.[activeStyle.value]
   return s && typeof s === 'object' && 'path2' in s
 })
 
+
 const modalPath = computed(() => {
   const s = current.value?.svg?.[activeStyle.value]
   return typeof s === 'object' ? (s as any).path : ''
 })
 
+
 const modalPath2 = computed(() => {
   const s = current.value?.svg?.[activeStyle.value]
   return typeof s === 'object' ? (s as any).path2 : ''
 })
+
 
 const modalBox = computed(() => {
   const s = current.value?.svg?.[activeStyle.value]
@@ -273,6 +317,7 @@ async function exportPng() {
       ? `<path d="${modalPath.value}" fill="${primary.value}" opacity="0.4"/><path d="${modalPath2.value}" fill="${secondary.value}"/>`
       : `<path d="${modalPath.value}" fill="${primary.value}"/>`}
   </svg>`
+
 
   const img = new window.Image()
   img.src = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }))
@@ -301,4 +346,12 @@ async function copySvg() {
   </svg>`
   await navigator.clipboard.writeText(svg)
 }
+
+// SVG-ID kopieren
+async function copyId() {
+  if (!current.value) return
+  await navigator.clipboard.writeText(current.value.id)
+}
+
+
 </script>
