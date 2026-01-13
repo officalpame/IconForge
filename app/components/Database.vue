@@ -240,15 +240,19 @@ async function copyUnicode() {
 // Gefilterte Icons basierend auf Suchanfrage und Stilfilter
 
 const gefiltert = computed(() => {
-  const q = querry.value.trim().toLowerCase();
+  const q = querry.value.toLowerCase();
   return icons.value.filter(icon => {
-  
     const label = (icon.label || '').toString().toLowerCase();
     const id = (icon.id || '').toString().toLowerCase();
-    const matchText = !q || label.includes(q) || id.includes(q);
+    const terms = Array.isArray(icon.search?.terms)? icon.search.terms.map(t => t.toLowerCase()) : [];
+    const matchText=
+      !q ||
+      label.includes(q) ||
+      id.includes(q) ||
+      terms.some(term => term.includes(q)); 
 
-    const styles = Object.keys(icon.svg || {});
-    const matchStyle = styleFilter.value === 'all' || styles.includes(styleFilter.value);
+   const styles = Object.keys(icon.svg || {});
+   const matchStyle = styleFilter.value === 'all' || styles.includes(styleFilter.value);
 
     return matchText && matchStyle;
   });
