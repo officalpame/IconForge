@@ -1,4 +1,6 @@
 <template>
+
+<!-- ================= HEADER ================= -->
   <div class="flex flex-col min-h-screen bg-white dark:bg-gray-900">
     <header class="sticky top-0 z-50 border-b bg-white shadow-sm dark:bg-gray-900 dark:border-gray-700">
       <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
