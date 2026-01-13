@@ -176,6 +176,35 @@ const gefiltert = computed(() => {
   })
 })
 
+
+// Lazy Load Function 
+
+const icons = ref<IconType[]>([])
+const page = ref(1)
+const pageSize = 20
+
+async function loadIcons() {
+  const res = await fetch('/icons.json')
+  const allIcons = Object.values(await res.json())
+  icons.value = allIcons.slice(0, page.value * pageSize)
+}
+
+onMounted(() => {
+  loadIcons()
+  window.addEventListener('scroll', handleScroll)
+})
+
+function handleScroll() {
+  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+    page.value++
+    loadIcons()
+  }
+}
+
+
+
+
+
 function toggleTheme( ) {
   dark.value = !dark.value
   document.documentElement.classList.toggle('dark', dark.value )
