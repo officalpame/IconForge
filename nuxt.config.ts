@@ -4,6 +4,9 @@ export default defineNuxtConfig({
     typescript: {
         strict: true,
     },
+    devtools: {
+        enabled: false 
+        },
     css: ['@/assets/css/main.css'],
     modules: [
         '@nuxt/ui'
