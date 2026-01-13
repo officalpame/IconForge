@@ -11,7 +11,7 @@
 
         <div class = "shrink-0" >
           <h1 class = "text-2xl font-bold text-gray-900 dark:text-white" > ICONFORGE </h1>
-          <p class = "text-xs text-gray-500 dark:text-gray-400" >Deine Icon Sammlung</p>
+          <p class = "text-xs text-gray-500 dark:text-gray-400" >Die ICON Datenbank</p>
         </div>
 
 
@@ -48,7 +48,7 @@
       </div>
     </header>
 
-    
+
     <!-- Grid -->
 
 
@@ -150,7 +150,7 @@
 
 
 
-// --- Imports ---
+
 import { ref, computed, onMounted } from 'vue'
 import type { Icon as IconType } from '~/types/icon'
 
