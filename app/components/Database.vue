@@ -56,21 +56,22 @@
     <main class = "flex-1 max-w-7xl mx-auto w-full px-6 py-8" >
       <div class = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" >
 
+
         <button
-          v-for = "icon in gefiltert" 
-          :key = "icon.id"
-          @click = "open(icon)"
-          class = "rounded-lg border p-4 bg-gray-50 hover:shadow hover:scale-105 transition dark:bg-gray-800 dark:border-gray-700"
+          v-for="icon in gefiltert"
+          :key="icon.id"
+          @click="open(icon)"
+          class="rounded-lg border p-4 bg-gray-50 hover:shadow hover:scale-105 transition dark:bg-gray-800 dark:border-gray-700"
         >
           <svg
-            v-if = "iconPath(icon)"
-            :viewBox = "iconViewBox(icon)"
-            class = "w-8 h-8 mx-auto mb-2 text-gray-900 dark:text-white"
-            fill = "currentColor"
+            v-if="iconPathGrid(icon)"
+            :viewBox="iconViewBoxGrid(icon)"
+            class="w-8 h-8 mx-auto mb-2 text-gray-900 dark:text-white"
+            fill="currentColor"
           >
-            <path :d = "iconPath(icon)" />
+            <path :d="iconPathGrid(icon)" />
           </svg>
-          <p class = "text-xs text-center truncate dark:text-white"> {{ icon.label }} </p>
+          <p class="text-xs text-center truncate dark:text-white">{{ icon.label }}</p>
         </button>
 
         <p v-if = "gefiltert.length === 0" class = "col-span-full text-center text-sm text-gray-500">
@@ -174,12 +175,32 @@ const styleFilter = ref('all')
 
 
 
-// Lazy Layout Function
 
+// Lazy Layout Function
 const icons = ref<IconType[]>([])
 const allIcons = ref<IconType[]>([])
 const page = ref(1)
 const pageSize = 66
+
+
+function iconPathGrid(icon: IconType) {
+
+  const d = icon.svg?.solid || icon.svg?.regular || icon.svg?.duotone || icon.svg?.brands;
+  if (typeof d === 'object' && d.path) return d.path;
+  if (typeof d === 'string') return d;
+  return '';
+}
+
+function iconViewBoxGrid(icon: IconType) {
+  if (icon.svg?.brands) {
+    const d = icon.svg.brands;
+    const vb = typeof d === 'object' ? d.viewBox : null;
+    return Array.isArray(vb) ? vb.join(' ') : vb || '0 0 512 512';
+  }
+  const d = icon.svg?.solid || icon.svg?.regular || icon.svg?.duotone;
+  const vb = typeof d === 'object' ? d.viewBox : null;
+  return Array.isArray(vb) ? vb.join(' ') : vb || '0 0 512 512';
+}
 
 
 
