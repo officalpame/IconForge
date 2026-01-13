@@ -11,5 +11,5 @@ button {
 }
 
 .icon-grid {
-  @apply w-6 h-6;
+  @apply w-5 h-5;
 }
