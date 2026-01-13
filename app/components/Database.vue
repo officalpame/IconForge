@@ -33,7 +33,7 @@
             <option value = "all" >Alle</option>
             <option value = "solid" >Solid</option>
             <option value = "regular" >Regular</option>
-            <option value = "duotone" >Duotone</option>
+            <option value = "brands" >Brands</option>
           </select>
 
           <button @click = "toggleTheme" class = "p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center" >
@@ -216,15 +216,22 @@ async function copyUnicode() {
 }
 
 
+// Gefilterte Icons basierend auf Suchanfrage und Stilfilter
 
 const gefiltert = computed(() => {
+  const q = querry.value.trim().toLowerCase();
   return icons.value.filter(icon => {
-    let q = querry.value.toLowerCase()
-    let matchText = icon.label.toLowerCase().includes(q) || icon.id.toLowerCase().includes(q)
-    let matchStyle = styleFilter.value === 'all' || icon.svg?.[styleFilter.value]
-    return matchText && matchStyle
-  })
-})
+  
+    const label = (icon.label || '').toString().toLowerCase();
+    const id = (icon.id || '').toString().toLowerCase();
+    const matchText = !q || label.includes(q) || id.includes(q);
+
+    const styles = Object.keys(icon.svg || {});
+    const matchStyle = styleFilter.value === 'all' || styles.includes(styleFilter.value);
+
+    return matchText && matchStyle;
+  });
+});
 
 
 
