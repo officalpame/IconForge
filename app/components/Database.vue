@@ -23,7 +23,7 @@
             placeholder = "Icons durchsuchen..."  
             class = "w-full rounded-lg border px-4 py-2 pl-10 text-sm bg-gray-50 dark:bg-gray-800 dark:text-white dark:border-gray-600 focus:ring-1 focus:ring-blue-500"
           />
-          <span class = "absolute left-3 top-2.5 text-gray-400" > 🔍 </span>
+          <span class = "absolute left-3 top-1.8 text-gray-400" > 🔍 </span>
         </div>
 
 
@@ -359,7 +359,7 @@ async function exportPng() {
       if (!b) return
       const a = document.createElement('a')
       a.href = URL.createObjectURL(b)
-      a.download = `${current.value!.id}.png`
+      a.download = `ICONFORGE.png`
       a.click()
     })
   }
