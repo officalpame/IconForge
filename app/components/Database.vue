@@ -114,35 +114,32 @@
               <path v-if = "!isDuotone" :d = "modalPath"/>
             </svg>
           </div>
-            <!-- Icon-Typ-Auswahl -->
-            <div class="flex gap-4 items-center">
+
+          <!-- Farb-Button, Typ-Auswahl und Unicode nebeneinander -->
+          <div class="flex gap-6 items-center justify-between mb-4">
+            <!-- Farb-Button -->
+            <div class="flex gap-2 items-center">
+              <input type="color" v-model="primary" />
+              <input v-if="isDuotone" type="color" v-model="secondary" />
+            </div>
+            <!-- Typ-Auswahl -->
+            <div class="flex gap-2 items-center">
               <label class="text-sm dark:text-white">Typ:</label>
               <select v-model="activeStyle" class="border rounded px-2 py-1 dark:bg-gray-800 dark:text-white">
                 <option v-for="style in availableStyles" :key="style" :value="style">{{ style.charAt(0).toUpperCase() + style.slice(1) }}</option>
               </select>
             </div>
-
-            <!-- SVG-ID kopieren -->
-            <div class="flex gap-2 items-center mt-2">
-              <span class="text-xs dark:text-white ml-4">Unicode:</span>
+            <!-- Unicode -->
+            <div class="flex gap-2 items-center">
+              <span class="text-xs dark:text-white">Unicode:</span>
               <span class="text-xs font-mono px-2 py-1 rounded bg-gray-200 dark:bg-gray-700">{{ unicodeHex }}</span>
               <button @click="copyUnicode" class="px-2 py-1 text-xs rounded bg-blue-500 text-white hover:bg-blue-600">Kopieren</button>
             </div>
-
-
-<!-- Farbe Auswählen --> 
-          <div class = "flex gap-4" >
-            <input type = "color" v-model = "primary" />
-            <input v-if = "isDuotone" type = "color" v-model = "secondary" />
           </div>
-
-
 
           <select v-model.number = "size" class = "w-full border rounded px-3 py-2" >
             <option v-for = "n in [64,128,256,512]" :key = "n" :value = "n"> {{ n }} × {{ n }} </option>
           </select>
-
-
 
           <div class = "flex gap-3" >
             <button @click = "exportPng" class = "flex-1 bg-blue-600 text-white py-2 rounded-lg" >
