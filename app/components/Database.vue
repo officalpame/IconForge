@@ -52,10 +52,9 @@
     <!-- Grid -->
 
 
+
     <main class = "flex-1 max-w-7xl mx-auto w-full px-6 py-8" >
       <div class = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" >
-
-
 
         <button
           v-for = "icon in gefiltert" 
@@ -74,12 +73,15 @@
           <p class = "text-xs text-center truncate dark:text-white"> {{ icon.label }} </p>
         </button>
 
-
-
         <p v-if = "gefiltert.length === 0" class = "col-span-full text-center text-sm text-gray-500">
           Keine Icons gefunden
         </p>
 
+      </div>
+      <div class="flex justify-center mt-6">
+        <button v-if="icons.length < allIcons.length" @click="loadMore" class="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">
+          Mehr laden
+        </button>
       </div>
     </main>
 
@@ -158,13 +160,30 @@ const dark = ref(false)
 const querry = ref('') 
 const styleFilter = ref('all')
 
+
+
+// Lazy Layout Function
+
 const icons = ref<IconType[]>([])
+const allIcons = ref<IconType[]>([])
+const page = ref(1)
+const pageSize = 66
+
+
+
+onMounted(async () => {
+  dark.value = localStorage.getItem('darkMode') === 'true'
+  document.documentElement.classList.toggle('dark', dark.value)
+  await loadIcons()
+})
+
 const current = ref<IconType|null>(null)
 
 const primary = ref('#111827')
 const secondary = ref('#6B7280')
 const size = ref(256)
 const activeStyle = ref<'solid'|'regular'|'duotone'>('solid')
+
 
 
 const gefiltert = computed(() => {
@@ -177,29 +196,26 @@ const gefiltert = computed(() => {
 })
 
 
-// Lazy Load Function 
 
-const icons = ref<IconType[]>([])
-const page = ref(1)
-const pageSize = 20
 
 async function loadIcons() {
-  const res = await fetch('/icons.json')
-  const allIcons = Object.values(await res.json())
-  icons.value = allIcons.slice(0, page.value * pageSize)
-}
-
-onMounted(() => {
-  loadIcons()
-  window.addEventListener('scroll', handleScroll)
-})
-
-function handleScroll() {
-  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
-    page.value++
-    loadIcons()
+  if (allIcons.value.length === 0) {
+    const res = await fetch('/icons.json')
+    allIcons.value = Object.values(await res.json())
   }
+  icons.value = allIcons.value.slice(0, page.value * pageSize)
 }
+
+function loadMore() {
+  page.value++
+  icons.value = allIcons.value.slice(0, page.value * pageSize)
+}
+
+onMounted(async () => {
+  dark.value = localStorage.getItem('darkMode') === 'true'
+  document.documentElement.classList.toggle('dark', dark.value)
+  await loadIcons()
+})
 
 
 
@@ -247,13 +263,8 @@ const modalBox = computed(() => {
   return Array.isArray(vb) ? vb.join(' ') : vb || '0 0 512 512'
 })
 
-onMounted(async () => {
-  dark.value = localStorage.getItem('darkMode') === 'true'
-  document.documentElement.classList.toggle('dark', dark.value)
 
-  const res = await fetch('/icons.json')
-  icons.value = Object.values(await res.json())
-})
+
 
 async function exportPng() {
   if (!current.value) return
