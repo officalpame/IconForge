@@ -2,12 +2,8 @@
   <div :class="[  'min-h-screen flex flex-col', dark ? 'dark bg-gray-900' : 'bg-white' ]"    >
 
     <!--   Header   -->
-
-
     <header class = "sticky top-0 z-40 border-b shadow-sm bg-white dark:bg-gray-900 dark:border-gray-700" >
       <div class = "max-w-7xl mx-auto px-6 py-4 flex items-center gap-6" >
-
-
 
         <div class = "shrink-0" >
           <h1 class = "text-2xl font-bold text-gray-900 dark:text-white" > ICONFORGE </h1>
@@ -36,11 +32,11 @@
             <option value = "brands" >Brands</option>
           </select>
 
-          <button @click = "toggleTheme" class = "p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center" >
+          <button @click = "toggleTheme" class = "p-2 rounded-lg transition-colors flex items-center justify-center" >
             <img 
               :src = "dark ? '/pictures/light.png' : '/pictures/dark.png'" 
               alt = "Theme Toggle" 
-              class = "h-12 w-12 object-contain"
+              class = "h-full w-12 object-contain"
             />
           </button> 
         </div>
@@ -164,16 +160,12 @@
 
 <script setup lang="ts">
 
-
-
 import { ref, computed, onMounted, watch } from 'vue'
 import type { Icon as IconType } from '~/types/icon'
 
 const dark = ref(false)
 const querry = ref('') 
 const styleFilter = ref('all')
-
-
 
 
 // Lazy Layout Function
@@ -382,5 +374,11 @@ async function copyId() {
   await navigator.clipboard.writeText(current.value.id)
 }
 
+// Website Titel setzen
+import { useHead } from '#imports'
+
+useHead({
+  title: 'Datenbank | ICONFORGE'
+})
 
 </script>
