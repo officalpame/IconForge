@@ -1,20 +1,20 @@
 # IconForge
 
 IconForge ist eine kleine web anwendung mit Nuxt.
-Mit diese app kann man Icons verwalten und in eine Datenbank seite anschauen.
-Es ist gedacht fur einfache benutzung und schnel testen.
+Mit diese app kann man Icons verwalten und in einer Datenbank anschauen.
+Es ist gedacht für einfache benutzung
 
 ## Was macht die Anwendung
 
-- zeigt icons aus eine liste
+- zeigt icons aus einer liste
 - hat eine startseite und eine database seite
 - hilft beim orgnisieren von icon daten
 
 ## Installation
 
 1. Projekt runterladen oder clonen.
-2. Im ordner gehen.
-3. Abhangigkeiten installieren:
+2. In den ordner gehen.
+3. Packete installieren:
 
 ```bash
 npm install
@@ -34,7 +34,7 @@ http://localhost:3000
 
 ## Kurz Nutzung
 
-Nach start siehst du die Startseite.
+Nach dem start siehst du die Startseite.
 Dann kannst du auf die Database seite gehen und die icons ansehen.
 
 made by officalpame
